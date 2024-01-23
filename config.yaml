@@ -1,3 +1,7 @@
+languageCode: zh-cn
+languageCode: zh-cn
+DefaultContentLanguage: zh-cn
+hasCJKLanguage: true
 module:
     hugoVersion:
         extended: true

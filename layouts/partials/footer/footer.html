@@ -8,6 +8,16 @@
         {{ now.Format "2006" }} {{ default .Site.Title .Site.Copyright }}
     </section>
     
+    <!-- 全局统计 -->
+	<!-- insert busuanzi -->
+	{{ if .Site.Params.busuanzi.enabled -}}
+	<div class="busuanzi-footer">
+        本文总阅读量 <span id="busuanzi_value_page_pv"></span> 次
+        本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+        本站总访客数 <span id="busuanzi_value_site_uv"></span> 人
+	</div>
+	{{- end -}}
+    <!-- 全局统计 -->
     <section class="powerby">
         {{ with .Site.Params.footer.customText }}
             {{ . | safeHTML }} <br/>

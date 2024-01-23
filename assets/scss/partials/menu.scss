@@ -131,9 +131,9 @@
     padding-left: 0;
     list-style: none;
     flex-direction: column;
-    overflow-y: auto;
+    overflow-y: hidden;
     flex-grow: 1;
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     background-color: var(--card-background);
 
     box-shadow: var(--shadow-l1);

@@ -41,6 +41,10 @@ widget:
     categoriesCloud:
         title:
             other: 分类
+list:
+    page:
+        one: "{{ .Count }} 篇文章"
+        other: "{{ .Count }} 篇文章"
 
 search:
     title:
@@ -54,7 +58,8 @@ search:
 
 footer:
     builtWith:
-        other: Built with {{ .Generator }}
+        other: 使用 {{ .Generator }} 构建
 
     designedBy:
         other: 主题 {{ .Theme }} 由 {{ .DesignedBy }} 设计
+
