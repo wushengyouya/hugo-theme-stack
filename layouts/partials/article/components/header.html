@@ -1,3 +1,7 @@
+{{/*  图片cdn  */}}
+{{- $imageCdnEnable := .Page.Site.Params.imageCdn.enable -}}
+{{- $imageCdnHost := .Page.Site.Params.imageCdn.host -}}	
+{{/*  图片cdn  */}}
 <header class="article-header">
     {{- $image := partialCached "helper/image" (dict "Context" . "Type" "article") .RelPermalink "article" -}}
     {{ if $image.exists }}
@@ -17,7 +21,13 @@
                         {{- $Width = $thumbnail.Width -}}
                         {{- $Height = $thumbnail.Height -}}
                     {{- end -}}
-
+                    {{/*  图片cdn  */}}
+                    {{- if $imageCdnEnable -}}
+                        {{ $filePath := (strings.Split $Permalink "/p/") }}
+                        {{ $filePath = index $filePath 1 }}
+                        {{ $Permalink = printf `%s%s` $imageCdnHost $filePath }}
+                    {{- end -}}
+                    {{/*  图片cdn  */}}
                     <img src="{{ $Permalink }}"
                         {{ with $Srcset }}srcset="{{ . }}"{{ end }}
                         width="{{ $Width }}" 
@@ -25,7 +35,15 @@
                         loading="lazy"
                         alt="Featured image of post {{ .Title }}" />
                 {{ else }}
-                    <img src="{{ $image.permalink }}" loading="lazy" alt="Featured image of post {{ .Title }}" />
+                    {{/*  图片cdn  */}}
+                    {{ $filePath := $image.permalink }}
+                    {{- if $imageCdnEnable -}}
+                        {{ $filePath = (strings.Split $image.permalink "/p/") }}
+                        {{ $filePath = index $filePath 1 }}
+                        {{ $filePath = printf `%s%s` $imageCdnHost $filePath }}
+                    {{- end -}}
+                    {{/*  图片cdn  */}}
+                    <img src="{{ $filePath }}" loading="lazy" alt="Featured image of post {{ .Title }}" />
                 {{ end }}
             </a>
         </div>
