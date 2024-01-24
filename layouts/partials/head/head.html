@@ -1,53 +1,31 @@
-{{/*  图片cdn  */}}
-{{- $imageCdnEnable := .Page.Site.Params.imageCdn.enable -}}
-{{- $imageCdnHost := .Page.Site.Params.imageCdn.host -}}	
-{{/*  图片cdn  */}}
-<header class="article-header">
-    {{- $image := partialCached "helper/image" (dict "Context" . "Type" "article") .RelPermalink "article" -}}
-    {{ if $image.exists }}
-        <div class="article-image">
-            <a href="{{ .RelPermalink }}">
-                {{ if $image.resource }}
-                    {{- $Permalink := $image.resource.RelPermalink -}}
-                    {{- $Width := $image.resource.Width -}}
-                    {{- $Height := $image.resource.Height -}}
-                    {{- $Srcset := "" -}}
-                    
-                    {{- if (default true .Page.Site.Params.imageProcessing.cover.enabled) -}}
-                        {{- $thumbnail := $image.resource.Resize "800x" -}}
-                        {{- $thumbnailRetina := $image.resource.Resize "1600x" -}}
-                        {{- $Srcset = printf "%s 800w, %s 1600w" $thumbnail.RelPermalink $thumbnailRetina.RelPermalink -}}
-                        {{- $Permalink = $thumbnail.RelPermalink -}}
-                        {{- $Width = $thumbnail.Width -}}
-                        {{- $Height = $thumbnail.Height -}}
-                    {{- end -}}
-                    {{/*  图片cdn  */}}
-                    {{- if $imageCdnEnable -}}
-                        {{ $filePath := (strings.Split $Permalink "/p/") }}
-                        {{ $filePath = index $filePath 1 }}
-                        {{ $Permalink = printf `%s%s` $imageCdnHost $filePath }}
-                    {{- end -}}
-                    {{/*  图片cdn  */}}
-                    <img src="{{ $Permalink }}"
-                        {{ with $Srcset }}srcset="{{ . }}"{{ end }}
-                        width="{{ $Width }}" 
-                        height="{{ $Height }}" 
-                        loading="lazy"
-                        alt="Featured image of post {{ .Title }}" />
-                {{ else }}
-                    {{/*  图片cdn  */}}
-                    {{ $filePath := $image.permalink }}
-                    {{- if $imageCdnEnable -}}
-                        {{ $filePath = (strings.Split $image.permalink "/p/") }}
-                        {{ $filePath = index $filePath 1 }}
-                        {{ $filePath = printf `%s%s` $imageCdnHost $filePath }}
-                    {{- end -}}
-                    {{/*  图片cdn  */}}
-                    <img src="{{ $filePath }}" loading="lazy" alt="Featured image of post {{ .Title }}" />
-                {{ end }}
-            </a>
-        </div>
-    {{ end }}
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 
-    {{ partialCached "article/components/details" . .RelPermalink }}
-</header>
+{{- $description := partialCached "data/description" . .RelPermalink -}}
+<meta name='description' content='{{ $description }}'>
+{{ with .Params.Keywords }}<meta name="keywords" content="{{ delimit . ", " }}">{{ end }}
+
+{{- $title := partialCached "data/title" . .RelPermalink -}}
+<title>{{ $title }}</title>
+
+<link rel='canonical' href='{{ .Permalink }}'>
+
+{{- partial "head/style.html" . -}}
+{{- partial "head/script.html" . -}}
+{{- partial "head/opengraph/include.html" . -}}
+
+{{- range .AlternativeOutputFormats -}}
+    <link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink | safeURL }}">
+{{- end -}}
+
+{{ with .Site.Params.favicon }}
+    <link rel="shortcut icon" href="{{ . }}" />
+{{ end }}
+
+{{- template "_internal/google_analytics.html" . -}}
+{{- partial "head/custom.html" . -}}
+<!-- busuanzi -->
+{{- if .Site.Params.busuanzi.enable -}}
+  <script async src="https://busuanzi.icodeq.com/busuanzi.pure.mini.js"></script>
+  <meta name="referrer" content="no-referrer-when-downgrade">
+{{- end -}}
