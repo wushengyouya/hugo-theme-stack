@@ -17,6 +17,16 @@
 		{{- $Height = $image.Height -}}
 		{{- $galleryImage = true -}}
 
+		{{/*  图片cdn  */}}
+		{{- $imageCdnEnable := .Page.Site.Params.imageCdn.enable -}}
+		{{- $imageCdnHost := .Page.Site.Params.imageCdn.host -}}	
+		{{- if $imageCdnEnable -}}
+			{{ $filePath := (strings.Split $Permalink "/p/") }}
+			{{ $filePath = index $filePath 1 }}
+			{{ $Permalink = printf `%s%s` $imageCdnHost $filePath }}
+		{{- end -}}
+		{{/*  图片cdn  */}}
+
 		{{- if (default true .Page.Site.Params.imageProcessing.content.enabled) -}}
 			{{- $small := $image.Resize `480x` -}}
 			{{- $big := $image.Resize `1024x` -}}
