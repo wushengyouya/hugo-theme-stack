@@ -24,6 +24,20 @@
 			{{ $filePath := (strings.Split $Permalink "/p/") }}
 			{{ $filePath = index $filePath 1 }}
 			{{ $Permalink = printf `%s%s` $imageCdnHost $filePath }}
+			<!-- 外链图片支持图库start -->
+			{{- if and (hasPrefix $Permalink "http") (default false .Page.Site.Params.render.image.extranelLink.enabled) -}}
+				{{- with resources.GetRemote $Permalink -}}
+					{{- with .Err -}}
+						{{- $warnMsg := printf "%s" $Permalink -}}
+						{{- warnf "%s.\nPlease check the link: %s\n" . $warnMsg -}}
+					{{- else -}}
+						{{- $image = . -}}
+					{{- end -}}
+				{{- else -}}
+					{{- warnf "Unable to get remote resource %q" $Permalink -}}
+				{{- end -}}
+			{{- end -}}
+			<!-- 外链图片支持图库end -->
 		{{- end -}}
 		{{/*  图片cdn  */}}
 
